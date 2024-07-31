@@ -1,0 +1,24 @@
+﻿@model Category
+<p>Edit a category</p>
+<form method="post">
+	<div class="border p-3 mt-4">
+		<input asp-for="Id" hidden/>
+		<div class="mb-3 row">
+			<label asp-for="Name"></label>
+			<input asp-for="Name" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="Description"></label>
+			<input asp-for="Description" />
+			<span asp-validation-for="Description" class="text-danger"></span>
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="DisplayPriority"></label>
+			<input asp-for="DisplayPriority" />
+			<span asp-validation-for="DisplayPriority" class="text-danger"></span>
+		</div>
+		<button type="submit" class="btn btn-primary">Edit</button>
+		<a asp-controller="Category" asp-action="Index" class="btn btn-primary">Back</a>
+	</div>
+</form>

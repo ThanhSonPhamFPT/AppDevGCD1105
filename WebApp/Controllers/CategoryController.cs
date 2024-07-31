@@ -24,6 +24,10 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
+            if (category.Name.Equals(category.Description))
+            {
+                ModelState.AddModelError("Description", "Name can not be the same as description");
+            }
             if (ModelState.IsValid)
             {
 				_dbContext.Categories.Add(category);
@@ -32,5 +36,57 @@ namespace WebApp.Controllers
 			}
             return View();
         }
-    }
+        public IActionResult Edit(int? categoryId)
+        {
+            if (categoryId == null || categoryId ==0)
+            {
+                return NotFound();
+            }
+            //Category? category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
+            Category? category = _dbContext.Categories.Find(categoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+			return View(category);
+		}
+		[HttpPost]
+		public IActionResult Edit(Category category)
+		{
+			if (category.Name.Equals(category.Description))
+			{
+				ModelState.AddModelError("Description", "Name can not be the same as description");
+			}
+			if (ModelState.IsValid)
+			{
+				_dbContext.Categories.Update(category);
+				_dbContext.SaveChanges();
+				return RedirectToAction("Index");
+			}
+			return View();
+		}
+		public IActionResult Delete(int? categoryId)
+		{
+			if (categoryId == null || categoryId == 0)
+			{
+				return NotFound();
+			}
+			//Category? category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
+			Category? category = _dbContext.Categories.Find(categoryId);
+			if (category == null)
+			{
+				return NotFound();
+			}
+			return View(category);
+		}
+		[HttpPost]
+		public IActionResult Delete(Category category)
+		{
+
+				_dbContext.Categories.Remove(category);
+				_dbContext.SaveChanges();
+				return RedirectToAction("Index");
+
+		}
+	}
 }
