@@ -32,6 +32,7 @@ namespace WebApp.Controllers
             {
 				_dbContext.Categories.Add(category);
 				_dbContext.SaveChanges();
+				TempData["success"] = "Category Created successfully";
 				return RedirectToAction("Index");
 			}
             return View();
@@ -61,6 +62,7 @@ namespace WebApp.Controllers
 			{
 				_dbContext.Categories.Update(category);
 				_dbContext.SaveChanges();
+				TempData["success"] = "Category updated successfully";
 				return RedirectToAction("Index");
 			}
 			return View();
@@ -83,9 +85,10 @@ namespace WebApp.Controllers
 		public IActionResult Delete(Category category)
 		{
 
-				_dbContext.Categories.Remove(category);
-				_dbContext.SaveChanges();
-				return RedirectToAction("Index");
+			_dbContext.Categories.Remove(category);
+			_dbContext.SaveChanges();
+			TempData["success"] = "Category deleted successfully";
+			return RedirectToAction("Index");
 
 		}
 	}
