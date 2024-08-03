@@ -1,0 +1,29 @@
+﻿@model Book
+<p>Edit new book</p>
+<form method="post">
+	<div class="border p-3 mt-4">
+		<input asp-for="Id" hidden/>
+		<div class="mb-3 row">
+			<label asp-for="Title"></label>
+			<input asp-for="Title" disabled/>
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="Description"></label>
+			<input asp-for="Description" disabled />
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="Author"></label>
+			<input asp-for="Author" disabled />
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="Price"></label>
+			<input asp-for="Price" disabled />
+		</div>
+		<div class="mb-3 row">
+			<label asp-for="Category"></label>
+			<input asp-for="CategoryId" disabled />
+		</div>
+		<button type="submit" class="btn btn-danger">Delete</button>
+		<a asp-controller="Book" asp-action="Index" class="btn btn-primary">Back</a>
+	</div>
+</form>
