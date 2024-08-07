@@ -15,7 +15,8 @@ namespace WebApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
             builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
-            var app = builder.Build();
+			builder.Services.AddScoped<IBookRepository, BookRepository>();
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

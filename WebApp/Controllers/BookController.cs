@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
-using WebApp.Models;
+using WebApp.Models;	
+using WebApp.Repository.IRepository;
 
 namespace WebApp.Controllers
 {
     public class BookController : Controller
     {
-		private readonly ApplicationDBContext _dbContext;
-		public BookController(ApplicationDBContext dbContext)
+		private readonly IBookRepository _bookRepository;
+		public BookController(IBookRepository bookRepository)
 		{
-			_dbContext = dbContext;
+			_bookRepository = bookRepository;
 		}
 
 		public IActionResult Index()
 		{
-			List<Book> myList = _dbContext.Books.ToList();
+			List<Book> myList = _bookRepository.GetAll().ToList();
 			return View(myList);
 		}
 		public IActionResult Create()
@@ -27,8 +28,8 @@ namespace WebApp.Controllers
 
 			if (ModelState.IsValid)
 			{
-				_dbContext.Books.Add(book);
-				_dbContext.SaveChanges();
+				_bookRepository.Add(book);
+				_bookRepository.Save();
 				TempData["success"] = "Book Created successfully";
 				return RedirectToAction("Index");
 			}
@@ -41,7 +42,7 @@ namespace WebApp.Controllers
 				return NotFound();
 			}
 			//Book? Book = _dbContext.Categories.FirstOrDefault(c => c.Id == BookId);
-			Book? Book = _dbContext.Books.Find(BookId);
+			Book? Book = _bookRepository.Get(c => c.Id == BookId);
 			if (Book == null)
 			{
 				return NotFound();
@@ -54,8 +55,8 @@ namespace WebApp.Controllers
 			
 			if (ModelState.IsValid)
 			{
-				_dbContext.Books.Update(book);
-				_dbContext.SaveChanges();
+				_bookRepository.Update(book);
+				_bookRepository.Save();
 				TempData["success"] = "Book updated successfully";
 				return RedirectToAction("Index");
 			}
@@ -68,7 +69,7 @@ namespace WebApp.Controllers
 				return NotFound();
 			}
 			//Book? Book = _dbContext.Categories.FirstOrDefault(c => c.Id == BookId);
-			Book? Book = _dbContext.Books.Find(BookId);
+			Book? Book = _bookRepository.Get(c => c.Id == BookId);
 			if (Book == null)
 			{
 				return NotFound();
@@ -79,8 +80,8 @@ namespace WebApp.Controllers
 		public IActionResult Delete(Book? book)
 		{
 
-			_dbContext.Books.Remove(book);
-			_dbContext.SaveChanges();
+			_bookRepository.Delete(book);
+			_bookRepository.Save();
 			TempData["success"] = "Book deleted successfully";
 			return RedirectToAction("Index");
 
