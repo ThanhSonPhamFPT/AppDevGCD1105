@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Repository;
+using WebApp.Repository.IRepository;
 
 namespace WebApp
 {
@@ -12,6 +14,7 @@ namespace WebApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

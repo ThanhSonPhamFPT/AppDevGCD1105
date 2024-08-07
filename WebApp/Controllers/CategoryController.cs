@@ -1,20 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Repository;
+using WebApp.Repository.IRepository;
 
 namespace WebApp.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDBContext _dbContext;
-        public CategoryController(ApplicationDBContext dbContext)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _dbContext = dbContext;
+			_categoryRepository = categoryRepository;
         }
 
         public IActionResult Index()
         {
-            List<Category> myList = _dbContext.Categories.ToList();
+            List<Category> myList = _categoryRepository.GetAll().ToList();
             return View(myList);
         }
         public IActionResult Create()
@@ -30,8 +32,8 @@ namespace WebApp.Controllers
             }
             if (ModelState.IsValid)
             {
-				_dbContext.Categories.Add(category);
-				_dbContext.SaveChanges();
+				_categoryRepository.Add(category);
+				_categoryRepository.Save();
 				TempData["success"] = "Category Created successfully";
 				return RedirectToAction("Index");
 			}
@@ -43,10 +45,10 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            //Category? category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
-            Category? category = _dbContext.Categories.Find(categoryId);
-            if (category == null)
-            {
+			//Category? category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
+			Category? category = _categoryRepository.Get(c => c.Id == categoryId);
+			if (category== null)
+			{
                 return NotFound();
             }
 			return View(category);
@@ -60,8 +62,8 @@ namespace WebApp.Controllers
 			}
 			if (ModelState.IsValid)
 			{
-				_dbContext.Categories.Update(category);
-				_dbContext.SaveChanges();
+				_categoryRepository.Update(category);
+				_categoryRepository.Save();
 				TempData["success"] = "Category updated successfully";
 				return RedirectToAction("Index");
 			}
@@ -74,7 +76,7 @@ namespace WebApp.Controllers
 				return NotFound();
 			}
 			//Category? category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
-			Category? category = _dbContext.Categories.Find(categoryId);
+			Category? category = _categoryRepository.Get(c => c.Id == categoryId);
 			if (category == null)
 			{
 				return NotFound();
@@ -85,8 +87,8 @@ namespace WebApp.Controllers
 		public IActionResult Delete(Category category)
 		{
 
-			_dbContext.Categories.Remove(category);
-			_dbContext.SaveChanges();
+			_categoryRepository.Delete(category);
+			_categoryRepository.Save();
 			TempData["success"] = "Category deleted successfully";
 			return RedirectToAction("Index");
 
