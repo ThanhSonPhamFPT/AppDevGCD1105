@@ -1,8 +1,9 @@
 ﻿@model Book
-<p>Edit new book</p>
-<form method="post">
+<p>Edit a book</p>
+<form method="post" enctype="multipart/form-data">
 	<div class="border p-3 mt-4">
 		<input asp-for="Id" hidden/>
+		<input asp-for="ImageUrl" hidden />
 		<div class="mb-3 row">
 			<label asp-for="Title"></label>
 			<input asp-for="Title" />
@@ -28,7 +29,12 @@
 			<input asp-for="CategoryId" />
 			<span asp-validation-for="CategoryId" class="text-danger"></span>
 		</div>
+		<div class="mb-3 row">
+			<label asp-for="ImageUrl"></label>
+			<input type="file" name="file" class="form-control" />
+		</div>
 		<button type="submit" class="btn btn-primary">Edit</button>
 		<a asp-controller="Book" asp-action="Index" class="btn btn-primary">Back</a>
+		<img src="@Model.ImageUrl" sizes="100%"/>
 	</div>
 </form>
