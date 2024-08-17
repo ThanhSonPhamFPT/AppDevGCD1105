@@ -30,7 +30,7 @@
 				<td>@book.Description</td>
 				<td>@book.Author</td>
 				<td>@book.Price</td>
-				<td></td>
+				<td>@book.Category.Name</td>
 				<td>
 					<a asp-controller="Book" asp-action="Edit" asp-route-bookId="@book.Id" class="btn btn-primary">Edit</a>
 					<a asp-controller="Book" asp-action="Delete" asp-route-bookId="@book.Id" class="btn btn-danger">Delete</a>

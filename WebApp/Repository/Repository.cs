@@ -14,15 +14,23 @@ namespace WebApp.Repository
 			_dbContext = dbContext;
 			_dbSet = _dbContext.Set<T>();
 		}
-		public IEnumerable<T> GetAll() 
+		public IEnumerable<T> GetAll(string? includeProperty = null) 
 		{
 			IQueryable<T> query = _dbSet;
+			if (includeProperty != null)
+			{
+				query = query.Include(includeProperty);
+			}
 			return query.ToList();
 		}
-		public T Get(Expression<Func<T, bool>> predicate)
+		public T Get(Expression<Func<T, bool>> predicate, string? includeProperty = null)
 		{
 			IQueryable<T> query = _dbSet;
 			query = query.Where(predicate);
+			if (includeProperty != null)
+			{
+				query = query.Include(includeProperty);
+			}
 			return query.FirstOrDefault();
 		}
 		public void Add (T entity)

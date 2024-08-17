@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WebApp.Data;
 using WebApp.Models;	
 using WebApp.Repository.IRepository;
@@ -8,22 +9,32 @@ namespace WebApp.Controllers
     public class BookController : Controller
     {
 		private readonly IBookRepository _bookRepository;
+		private readonly ICategoryRepository _categoryRepository;
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		public BookController(IBookRepository bookRepository,IWebHostEnvironment webHostEnvironment)
+		public BookController(IBookRepository bookRepository,IWebHostEnvironment webHostEnvironment, ICategoryRepository categoryRepository)
 		{
 			_bookRepository = bookRepository;
 			_webHostEnvironment = webHostEnvironment;
-
+			_categoryRepository = categoryRepository;
 		}
 
 		public IActionResult Index()
 		{
-			List<Book> myList = _bookRepository.GetAll().ToList();
+			List<Book> myList = _bookRepository.GetAll("Category").ToList();
 			return View(myList);
 		}
 		public IActionResult Create()
 		{
-			return View();
+			BookVM bookVM = new BookVM()
+			{
+				Categories = _categoryRepository.GetAll().Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+				{
+					Text = c.Name,
+					Value = c.Id.ToString()
+				}),
+				Book = new Book()
+			};
+			return View(bookVM);
 		}
 		[HttpPost]
 		public IActionResult Create(Book? book, IFormFile? file)
@@ -47,21 +58,40 @@ namespace WebApp.Controllers
 				TempData["success"] = "Book Created successfully";
 				return RedirectToAction("Index");
 			}
-			return View();
+
+			BookVM bookVM = new BookVM()
+			{
+				Categories = _categoryRepository.GetAll().Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+				{
+					Text = c.Name,
+					Value = c.Id.ToString()
+				}),
+				Book = new Book()
+			};
+			return View(bookVM);
 		}
 		public IActionResult Edit(int? BookId)
 		{
+			BookVM bookVM = new BookVM()
+			{
+				Categories = _categoryRepository.GetAll().Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+				{
+					Text = c.Name,
+					Value = c.Id.ToString()
+				}),
+				Book = new Book()
+			};
 			if (BookId == null || BookId == 0)
 			{
 				return NotFound();
 			}
 			//Book? Book = _dbContext.Categories.FirstOrDefault(c => c.Id == BookId);
-			Book? Book = _bookRepository.Get(c => c.Id == BookId);
-			if (Book == null)
+			bookVM.Book = _bookRepository.Get(c => c.Id == BookId);
+			if (bookVM.Book == null)
 			{
 				return NotFound();
 			}
-			return View(Book);
+			return View(bookVM);
 		}
 		[HttpPost]
 		public IActionResult Edit(Book? book, IFormFile? file)
@@ -94,7 +124,16 @@ namespace WebApp.Controllers
 				TempData["success"] = "Book updated successfully";
 				return RedirectToAction("Index");
 			}
-			return View();
+			BookVM bookVM = new BookVM()
+			{
+				Categories = _categoryRepository.GetAll().Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+				{
+					Text = c.Name,
+					Value = c.Id.ToString()
+				}),
+				Book = _bookRepository.Get(c => c.Id == book.Id)
+			};
+			return View(bookVM);
 		}
 		public IActionResult Delete(int? BookId)
 		{
