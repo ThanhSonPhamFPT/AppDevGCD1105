@@ -3,6 +3,8 @@ using WebApp.Data;
 using WebApp.Repository;
 using WebApp.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using WebApp.Utility;
 
 namespace WebApp
 {
@@ -15,10 +17,17 @@ namespace WebApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDBContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+			builder.Services.ConfigureApplicationCookie(option =>
+			{
+				option.LoginPath = $"/Identity/Account/Login";
+				option.LogoutPath = $"/Identity/Account/Logout";
+				option.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+			});
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDBContext>();
-            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+			builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
+			builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
 			builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IEmailSender,EmailSendercs>();
             builder.Services.AddRazorPages();
 			var app = builder.Build();
 

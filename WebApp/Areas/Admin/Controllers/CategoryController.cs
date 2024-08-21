@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApp.Data;
 using WebApp.Models;
 using WebApp.Repository;
@@ -20,7 +21,8 @@ namespace WebApp.Areas.Admin.Controllers
             List<Category> myList = _categoryRepository.GetAll().ToList();
             return View(myList);
         }
-        public IActionResult Create()
+		[Authorize(Roles = "Admin")]
+		public IActionResult Create()
         {
             return View();
         }

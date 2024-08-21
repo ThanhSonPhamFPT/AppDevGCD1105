@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApp.Data;
 using WebApp.Models;	
@@ -7,6 +8,7 @@ using WebApp.Repository.IRepository;
 namespace WebApp.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles ="Admin")]
     public class BookController : Controller
     {
 		private readonly IBookRepository _bookRepository;
