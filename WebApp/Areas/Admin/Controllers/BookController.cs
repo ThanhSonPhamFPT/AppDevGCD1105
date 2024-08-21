@@ -6,6 +6,7 @@ using WebApp.Repository.IRepository;
 
 namespace WebApp.Controllers
 {
+	[Area("Admin")]
     public class BookController : Controller
     {
 		private readonly IBookRepository _bookRepository;
